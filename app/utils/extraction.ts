@@ -5,7 +5,12 @@
 
 import type { ExtractedData } from "../type/Document";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:7261";
+const _rawBase =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV
+    ? "http://localhost:7261"
+    : "https://document-management-system-sigma.vercel.app");
+const API_BASE_URL = _rawBase.replace(/\/+$/, "").replace(/\/api$/i, "");
 
 /**
  * Extracts document data using the backend OCR/AI service
