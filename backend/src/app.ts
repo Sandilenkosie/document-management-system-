@@ -13,6 +13,9 @@ dotenv.config();
 
 const app = express();
 
+// Vercel runs behind a reverse proxy and forwards client IP via X-Forwarded-For.
+app.set("trust proxy", 1);
+
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
