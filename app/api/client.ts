@@ -1,6 +1,13 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.DEV ? "http://localhost:7261" : window.location.origin);
+const resolveApiBaseUrl = (): string => {
+  const rawBase =
+    import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV ? "http://localhost:7261" : window.location.origin);
+
+  const withoutTrailingSlash = rawBase.replace(/\/+$/, "");
+  return withoutTrailingSlash.replace(/\/api$/i, "");
+};
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 class ApiClient {
   private token: string | null = null;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "../store/Auth";
@@ -60,7 +60,7 @@ const Register = () => {
             </p>
 
             <Button
-              onClick={() => navigate("/index")}
+              onClick={() => navigate("/")}
               className="w-full bg-crypto-purple hover:bg-crypto-dark-purple text-white"
             >
               Go to Home
@@ -205,12 +205,12 @@ const Register = () => {
         <div className="mt-4 text-center">
           <p className="text-gray-300">
             Already have an account?{" "}
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="text-crypto-purple hover:text-crypto-light-purple"
             >
               Login here
-            </a>
+            </Link>
           </p>
         </div>
       </div>

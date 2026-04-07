@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "../store/Auth";
@@ -150,12 +150,12 @@ const Login = () => {
         <div className="mt-4 text-center">
           <p className="text-gray-300">
             Don't have an account?{" "}
-            <a
-              href="/register"
+            <Link
+              to="/register"
               className="text-crypto-purple hover:text-crypto-light-purple"
             >
               Register here
-            </a>
+            </Link>
           </p>
         </div>
       </div>
