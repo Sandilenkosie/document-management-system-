@@ -24,7 +24,6 @@ const Register = () => {
     lastName: "",
     role: "USER",
   });
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [validationErrors, setValidationErrors] =
     useState<RegisterValidationErrors>({});
 
@@ -98,7 +97,7 @@ const Register = () => {
 
     try {
       await register(formData);
-      setRegistrationSuccess(true);
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       console.error("Registration error:", err);
     }

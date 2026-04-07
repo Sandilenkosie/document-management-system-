@@ -16,7 +16,6 @@ import {
   ArrowRight,
   Activity,
   Zap,
-  Brain,
 } from "lucide-react";
 
 type DashboardStats = {
