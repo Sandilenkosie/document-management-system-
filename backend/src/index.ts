@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import rateLimit from "express-rate-limit";
+import { rateLimit } from "express-rate-limit";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -27,7 +27,7 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 // Security middleware
-app.use(helmet());
+app.use((helmet as unknown as () => express.RequestHandler)());
 app.use(
   cors({
     origin: (origin, callback) => {
