@@ -56,17 +56,30 @@ function parseReportFilters(query: any) {
   return reportFiltersSchema.parse(raw);
 }
 
+function buildBaseWhereClause(user: { id: string; role: string }) {
+  const canViewAllDocuments =
+    user.role === "REVIEWER" ||
+    user.role === "MANAGER" ||
+    user.role === "ADMIN";
+
+  return canViewAllDocuments ? {} : { uploadedBy: user.id };
+}
+
 router.get("/spend-summary", authenticate, async (req, res, next) => {
   try {
     const filters = parseReportFilters(req.query);
 
-    let whereClause: any = {};
+    let whereClause: any = buildBaseWhereClause(req.user!);
 
     // Apply filters
     if (filters.dateRange) {
+      const startDate = new Date(filters.dateRange.startDate);
+      const endDate = new Date(filters.dateRange.endDate);
+      endDate.setHours(23, 59, 59, 999);
+
       whereClause.uploadedAt = {
-        gte: new Date(filters.dateRange.startDate),
-        lte: new Date(filters.dateRange.endDate),
+        gte: startDate,
+        lte: endDate,
       };
     }
 
@@ -160,13 +173,17 @@ router.get("/vendor-analysis", authenticate, async (req, res, next) => {
   try {
     const filters = parseReportFilters(req.query);
 
-    let whereClause: any = {};
+    let whereClause: any = buildBaseWhereClause(req.user!);
 
     // Apply filters
     if (filters.dateRange) {
+      const startDate = new Date(filters.dateRange.startDate);
+      const endDate = new Date(filters.dateRange.endDate);
+      endDate.setHours(23, 59, 59, 999);
+
       whereClause.uploadedAt = {
-        gte: new Date(filters.dateRange.startDate),
-        lte: new Date(filters.dateRange.endDate),
+        gte: startDate,
+        lte: endDate,
       };
     }
 
@@ -258,13 +275,17 @@ router.get("/tax-vat", authenticate, async (req, res, next) => {
   try {
     const filters = parseReportFilters(req.query);
 
-    let whereClause: any = {};
+    let whereClause: any = buildBaseWhereClause(req.user!);
 
     // Apply filters
     if (filters.dateRange) {
+      const startDate = new Date(filters.dateRange.startDate);
+      const endDate = new Date(filters.dateRange.endDate);
+      endDate.setHours(23, 59, 59, 999);
+
       whereClause.uploadedAt = {
-        gte: new Date(filters.dateRange.startDate),
-        lte: new Date(filters.dateRange.endDate),
+        gte: startDate,
+        lte: endDate,
       };
     }
 

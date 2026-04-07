@@ -549,22 +549,6 @@ const Dashboard = () => {
                 </div>
                 <ArrowRight className="w-5 h-5" />
               </Button>
-
-              <Button
-                variant="outline"
-                className="w-full justify-between border-2 border-slate-600 text-gray-300 hover:bg-slate-700 hover:text-white hover:border-slate-500 h-16 px-6 transition-all duration-300 hover:shadow-xl rounded-2xl"
-                onClick={() => navigate("/duplicates")}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-slate-600/50 rounded-xl">
-                    <AlertTriangle className="w-6 h-6" />
-                  </div>
-                  <span className="font-semibold text-lg">
-                    Check Duplicates
-                  </span>
-                </div>
-                <ArrowRight className="w-5 h-5" />
-              </Button>
             </div>
           </div>
         </div>

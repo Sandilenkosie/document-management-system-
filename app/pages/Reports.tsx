@@ -65,7 +65,15 @@ const ReportsPage = () => {
 
   // Get unique vendors
   const uniqueVendors = Array.from(
-    new Set(documents.map((d) => d.extractedData.vendorName)),
+    new Set(
+      documents
+        .map((d) => {
+          const extractedVendor = (d as any).extractedData?.vendorName;
+          const flatVendor = (d as any).vendorName;
+          return String(extractedVendor ?? flatVendor ?? "").trim();
+        })
+        .filter(Boolean),
+    ),
   );
 
   const applyFilters = () => {
