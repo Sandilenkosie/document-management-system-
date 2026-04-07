@@ -126,17 +126,12 @@ const ReportsPage = () => {
   };
 
   useEffect(() => {
-    loadReport();
     loadInsights();
-  }, [
-    reportType,
-    dateFrom,
-    dateTo,
-    vendorFilter,
-    statusFilter,
-    amountMin,
-    amountMax,
-  ]);
+  }, []);
+
+  useEffect(() => {
+    loadReport();
+  }, [reportType]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -297,7 +292,7 @@ const ReportsPage = () => {
                 </div>
 
                 <Button
-                  onClick={applyFilters}
+                  onClick={loadReport}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   Apply Filters

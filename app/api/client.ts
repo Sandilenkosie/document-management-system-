@@ -35,6 +35,10 @@ const normalizeClientErrorMessage = (error: unknown): string => {
 class ApiClient {
   private token: string | null = null;
 
+  private normalizeApprovalStatus(status: string): string {
+    return status.trim().toUpperCase();
+  }
+
   setToken(token: string) {
     this.token = token;
   }
@@ -186,7 +190,7 @@ class ApiClient {
     }
     if (filters?.approvalStatus) {
       filters.approvalStatus.forEach((s: string) =>
-        params.append("approvalStatus", s),
+        params.append("approvalStatus", this.normalizeApprovalStatus(s)),
       );
     }
     if (filters?.amountRange) {
@@ -210,7 +214,7 @@ class ApiClient {
     }
     if (filters?.approvalStatus) {
       filters.approvalStatus.forEach((s: string) =>
-        params.append("approvalStatus", s),
+        params.append("approvalStatus", this.normalizeApprovalStatus(s)),
       );
     }
     if (filters?.amountRange) {
@@ -234,7 +238,7 @@ class ApiClient {
     }
     if (filters?.approvalStatus) {
       filters.approvalStatus.forEach((s: string) =>
-        params.append("approvalStatus", s),
+        params.append("approvalStatus", this.normalizeApprovalStatus(s)),
       );
     }
     if (filters?.amountRange) {
