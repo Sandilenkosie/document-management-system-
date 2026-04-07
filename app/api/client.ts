@@ -1,7 +1,9 @@
 const resolveApiBaseUrl = (): string => {
+  const fixedProdApiUrl = "https://document-management-system-aarp.vercel.app";
+
   const rawBase =
     import.meta.env.VITE_API_URL ||
-    (import.meta.env.DEV ? "http://localhost:7261" : window.location.origin);
+    (import.meta.env.DEV ? "http://localhost:7261" : fixedProdApiUrl);
 
   const withoutTrailingSlash = rawBase.replace(/\/+$/, "");
   return withoutTrailingSlash.replace(/\/api$/i, "");

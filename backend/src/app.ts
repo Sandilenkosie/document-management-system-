@@ -19,6 +19,8 @@ app.set("trust proxy", 1);
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
+  "https://document-management-system-aarp.vercel.app",
+  "https://document-management-system-aarp-rgvkw6ytt.vercel.app",
   ...(process.env.FRONTEND_URL
     ? process.env.FRONTEND_URL.split(",").map((origin) => origin.trim())
     : []),
@@ -36,26 +38,31 @@ const isAllowedVercelOrigin = (origin: string): boolean => {
 };
 
 app.use((helmet as unknown as () => express.RequestHandler)());
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) {
-        return callback(null, true);
-      }
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
 
-      if (isAllowedVercelOrigin(origin)) {
-        return callback(null, true);
-      }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  }),
-);
+    if (isAllowedVercelOrigin(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
