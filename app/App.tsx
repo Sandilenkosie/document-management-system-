@@ -19,6 +19,7 @@ const AUTH_ACTIVITY_KEY = "lastActivityAt";
 
 const App = () => {
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
+  const isAuthInitialized = useAuthStore((state) => state.isAuthInitialized);
   const token = useAuthStore((state) => state.token);
   const logout = useAuthStore((state) => state.logout);
 
@@ -76,19 +77,30 @@ const App = () => {
       <TooltipProvider>
         {/* <Toaster /> */}
         <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/upload" element={<Upload />} />
-            <Route path="/approvals" element={<Approvals />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        {!isAuthInitialized ? (
+          <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-10 w-10 animate-spin rounded-full border-2 border-blue-500/20 border-t-blue-400" />
+              <p className="text-sm text-slate-300">
+                Loading your workspace...
+              </p>
+            </div>
+          </div>
+        ) : (
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/upload" element={<Upload />} />
+              <Route path="/approvals" element={<Approvals />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        )}
       </TooltipProvider>
     </QueryClientProvider>
   );

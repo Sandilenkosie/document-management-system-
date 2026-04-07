@@ -6,6 +6,17 @@ import { authenticate } from "../middleware/auth.js";
 
 const router = Router();
 
+const asNumber = (value: number | null | undefined): number =>
+  typeof value === "number" && Number.isFinite(value) ? value : 0;
+
+const signedValue = (
+  value: number | null | undefined,
+  documentType: string | null | undefined,
+): number => {
+  const numericValue = asNumber(value);
+  return documentType === "CREDIT_NOTE" ? -numericValue : numericValue;
+};
+
 const reportFiltersSchema = z.object({
   dateRange: z
     .object({
@@ -206,6 +217,7 @@ router.get("/vendor-analysis", authenticate, async (req, res, next) => {
       where: whereClause,
       select: {
         vendorName: true,
+        documentType: true,
         amount: true,
         approvalStatus: true,
         uploadedAt: true,
@@ -233,7 +245,10 @@ router.get("/vendor-analysis", authenticate, async (req, res, next) => {
           approved: 0,
         };
       }
-      vendorMap[vendor].totalAmount += doc.amount || 0;
+      vendorMap[vendor].totalAmount += signedValue(
+        doc.amount,
+        doc.documentType,
+      );
       vendorMap[vendor].documentCount += 1;
       if (doc.approvalStatus === "APPROVED") {
         vendorMap[vendor].approved += 1;
@@ -308,6 +323,7 @@ router.get("/tax-vat", authenticate, async (req, res, next) => {
       where: whereClause,
       select: {
         vendorName: true,
+        documentType: true,
         amount: true,
         vatAmount: true,
         uploadedAt: true,
@@ -316,11 +332,13 @@ router.get("/tax-vat", authenticate, async (req, res, next) => {
     type TaxVatDocument = (typeof documents)[number];
 
     const totalTax = documents.reduce(
-      (sum: number, doc: TaxVatDocument) => sum + (doc.vatAmount || 0),
+      (sum: number, doc: TaxVatDocument) =>
+        sum + signedValue(doc.vatAmount, doc.documentType),
       0,
     );
     const totalAmount = documents.reduce(
-      (sum: number, doc: TaxVatDocument) => sum + (doc.amount || 0),
+      (sum: number, doc: TaxVatDocument) =>
+        sum + signedValue(doc.amount, doc.documentType),
       0,
     );
 
@@ -333,8 +351,14 @@ router.get("/tax-vat", authenticate, async (req, res, next) => {
       if (!taxByVendor[vendor]) {
         taxByVendor[vendor] = { taxAmount: 0, baseAmount: 0 };
       }
-      taxByVendor[vendor].taxAmount += doc.vatAmount || 0;
-      taxByVendor[vendor].baseAmount += doc.amount || 0;
+      taxByVendor[vendor].taxAmount += signedValue(
+        doc.vatAmount,
+        doc.documentType,
+      );
+      taxByVendor[vendor].baseAmount += signedValue(
+        doc.amount,
+        doc.documentType,
+      );
     });
 
     const report = {
