@@ -18,28 +18,27 @@ const Hero = () => {
           <div className="lg:w-1/2 animate-fade-in-left">
             <div className="inline-flex items-center bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-1.5 mb-6">
               <span className="text-xs font-medium text-crypto-purple mr-2">
-                New Feature
+                Platform Focus
               </span>
               <span className="text-xs text-gray-300">
-                AI-Powered Document Processing
+                Web-Based Document Management System
               </span>
               <ChevronRight className="h-4 w-4 text-gray-400 ml-1" />
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              <span className="text-gradient">Secure Document</span> Management
-              with AI Intelligence
+              <span className="text-gradient">Web-Based Document</span>
+              Management System
             </h1>
             <p className="text-lg text-gray-300 mb-8 max-w-lg">
-              Streamline your document workflow with automated data extraction,
-              intelligent approval routing, and comprehensive reporting powered
-              by AI.
+              Manage uploads, approvals, extraction, and reporting in one secure
+              web workspace for your operations team.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
                 className="bg-crypto-purple hover:bg-crypto-dark-purple text-white px-8 py-6"
               >
-                Get Started
+                Go to Dashboard
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button
@@ -47,7 +46,7 @@ const Hero = () => {
                 size="lg"
                 className="border-gray-700 text-white hover:bg-white/5 py-6"
               >
-                View Demo
+                Start Upload
                 <ArrowUpRight className="ml-2 h-5 w-5" />
               </Button>
             </div>

@@ -10,7 +10,7 @@ const Index = () => {
 
   // Set page title
   useEffect(() => {
-    document.title = "CryptoFlow | Modern Cryptocurrency Trading";
+    document.title = "Web-Based Document Management System";
   }, []);
 
   return (

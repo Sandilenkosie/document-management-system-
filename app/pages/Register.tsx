@@ -89,7 +89,9 @@ const Register = () => {
         <h1 className="text-2xl font-bold text-white text-center mb-2">
           Create Account
         </h1>
-        <p className="text-gray-300 text-center mb-6">Join CryptoFlow today</p>
+        <p className="text-gray-300 text-center mb-6">
+          Join the web-based document management system
+        </p>
 
         {error && (
           <div className="mb-4 p-3 bg-red-500/20 border border-red-500 text-red-200 rounded">

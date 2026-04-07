@@ -70,7 +70,7 @@ const Login = () => {
           Sign In
         </h1>
         <p className="text-gray-300 text-center mb-6">
-          Welcome back to CryptoFlow
+          Welcome back to your document workspace
         </p>
 
         {error && (
