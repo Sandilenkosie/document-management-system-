@@ -17,7 +17,11 @@ export async function extractDocumentData(file: File): Promise<ExtractedData> {
     formData.append("file", file);
     formData.append("documentType", "INVOICE"); // Default type for extraction
 
-    const token = localStorage.getItem("authToken");
+    const rememberMe = localStorage.getItem("authRememberMe");
+    const token =
+      rememberMe === "false"
+        ? sessionStorage.getItem("authToken")
+        : localStorage.getItem("authToken");
     if (!token) {
       throw new Error("Access token required");
     }
