@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
+
+  // Relations
+  documents     Document[]
+  approvals     Approval[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Document {
+  id               String        @id @default(cuid())
+  fileName         String
+  fileSize         Int
+  fileType         String
+  documentType     DocumentType
+  uploadedBy       String
+  uploadedAt       DateTime      @default(now())
+
+  // Extracted data
+  vendorName       String?
+  invoiceDate      String?
+  invoiceNumber    String?
+  amount           Float?
+  vatAmount        Float         @default(0)
+  currency         String        @default("USD")
+  description      String?
+
+  // Status
+  isDuplicate      Boolean       @default(false)
+  duplicateOf      String?
+  currentApprovalStage Int       @default(1)
+  approvalStatus   ApprovalStatus @default(PENDING)
+
+  // Relations
+  uploader         User          @relation(fields: [uploadedBy], references: [id])
+  approvals        Approval[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@map("documents")
+}
+
+model Approval {
+  id               String        @id @default(cuid())
+  documentId       String
+  stage            Int
+  approverRole     UserRole
+  approverId       String?
+  approverEmail    String?
+  status           ApprovalStatus
+  comment          String?
+  approvedAt       DateTime?
+
+  // Relations
+  document         Document      @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  approver         User?         @relation(fields: [approverId], references: [id], onDelete: SetNull)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@map("approvals")
+}
+
+enum UserRole {
+  USER
+  REVIEWER
+  MANAGER
+  ADMIN
+}
+
+enum DocumentType {
+  INVOICE
+  CREDIT_NOTE
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
