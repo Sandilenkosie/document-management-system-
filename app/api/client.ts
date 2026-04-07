@@ -1,5 +1,5 @@
 const resolveApiBaseUrl = (): string => {
-  const fixedProdApiUrl = "https://document-management-system-aarp.vercel.app";
+  const fixedProdApiUrl = "https://document-management-system-sigma.vercel.app";
 
   const rawBase =
     import.meta.env.VITE_API_URL ||

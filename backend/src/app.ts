@@ -19,8 +19,7 @@ app.set("trust proxy", 1);
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
-  "https://document-management-system-aarp.vercel.app",
-  "https://document-management-system-aarp-rgvkw6ytt.vercel.app",
+  "https://document-management-system-sigma.vercel.app",
   ...(process.env.FRONTEND_URL
     ? process.env.FRONTEND_URL.split(",").map((origin) => origin.trim())
     : []),
