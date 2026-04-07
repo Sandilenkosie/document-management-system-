@@ -24,6 +24,17 @@ const allowedOrigins = [
     : []),
 ].filter(Boolean);
 
+const isAllowedVercelOrigin = (origin: string): boolean => {
+  try {
+    const parsed = new URL(origin);
+    return (
+      parsed.protocol === "https:" && parsed.hostname.endsWith(".vercel.app")
+    );
+  } catch {
+    return false;
+  }
+};
+
 app.use((helmet as unknown as () => express.RequestHandler)());
 app.use(
   cors({
@@ -33,6 +44,10 @@ app.use(
       }
 
       if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      if (isAllowedVercelOrigin(origin)) {
         return callback(null, true);
       }
 
