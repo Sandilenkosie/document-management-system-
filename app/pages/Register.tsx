@@ -5,6 +5,14 @@ import { Input } from "@/components/ui/input";
 import { useAuthStore } from "../store/Auth";
 import type { RegisterRequestPayload } from "../type/Auth";
 
+type RegisterValidationErrors = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+};
+
 const Register = () => {
   const navigate = useNavigate();
   const { register, isLoading, error, clearError } = useAuthStore();
@@ -17,6 +25,8 @@ const Register = () => {
     role: "USER",
   });
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [validationErrors, setValidationErrors] =
+    useState<RegisterValidationErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,11 +34,67 @@ const Register = () => {
       ...prev,
       [name]: value,
     }));
+
+    if (
+      name === "firstName" ||
+      name === "lastName" ||
+      name === "email" ||
+      name === "password" ||
+      name === "confirmPassword"
+    ) {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
+  };
+
+  const validateForm = (): RegisterValidationErrors => {
+    const errors: RegisterValidationErrors = {};
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formData.firstName.trim()) {
+      errors.firstName = "Please enter your first name.";
+    }
+
+    if (!formData.lastName.trim()) {
+      errors.lastName = "Please enter your last name.";
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "Please enter your email address.";
+    } else if (!emailPattern.test(formData.email.trim())) {
+      errors.email =
+        "Please enter a valid email address, for example name@company.com.";
+    }
+
+    if (!formData.password) {
+      errors.password = "Please enter a password with at least 6 characters.";
+    } else if (formData.password.length < 6) {
+      errors.password = "Your password must be at least 6 characters long.";
+    }
+
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = "Please confirm your password.";
+    } else if (formData.confirmPassword !== formData.password) {
+      errors.confirmPassword =
+        "Passwords do not match. Please enter the same password in both fields.";
+    }
+
+    return errors;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
+    const errors = validateForm();
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors({});
 
     try {
       await register(formData);
@@ -37,51 +103,6 @@ const Register = () => {
       console.error("Registration error:", err);
     }
   };
-
-  // Success screen
-  if (registrationSuccess) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-crypto-blue">
-        <div className="w-full max-w-md p-8 bg-crypto-dark-blue rounded-lg shadow-lg border border-crypto-purple/20">
-          <div className="text-center">
-            <div className="mb-4 text-4xl">✓</div>
-            <h1 className="text-2xl font-bold text-white text-center mb-2">
-              Account Created!
-            </h1>
-            <p className="text-gray-300 text-center mb-6">
-              A verification email has been sent to
-            </p>
-            <p className="text-crypto-purple font-semibold mb-6">
-              {formData.email}
-            </p>
-            <p className="text-gray-300 text-sm mb-6">
-              Please check your email and click the verification link to
-              activate your account.
-            </p>
-
-            <Button
-              onClick={() => navigate("/")}
-              className="w-full bg-crypto-purple hover:bg-crypto-dark-purple text-white"
-            >
-              Go to Home
-            </Button>
-
-            <div className="mt-4 text-center">
-              <p className="text-gray-300 text-sm">
-                Didn't receive the email?{" "}
-                <a
-                  href="#"
-                  className="text-crypto-purple hover:text-crypto-light-purple"
-                >
-                  Resend verification email
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-crypto-blue">
@@ -115,8 +136,14 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Enter your first name"
               required
+              aria-invalid={Boolean(validationErrors.firstName)}
               className="bg-crypto-dark-purple/40 border-crypto-purple/30 text-white placeholder-gray-500"
             />
+            {validationErrors.firstName && (
+              <p className="mt-1 text-sm text-red-300">
+                {validationErrors.firstName}
+              </p>
+            )}
           </div>
 
           <div>
@@ -134,8 +161,14 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Enter your last name"
               required
+              aria-invalid={Boolean(validationErrors.lastName)}
               className="bg-crypto-dark-purple/40 border-crypto-purple/30 text-white placeholder-gray-500"
             />
+            {validationErrors.lastName && (
+              <p className="mt-1 text-sm text-red-300">
+                {validationErrors.lastName}
+              </p>
+            )}
           </div>
 
           <div>
@@ -153,8 +186,14 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Enter your email"
               required
+              aria-invalid={Boolean(validationErrors.email)}
               className="bg-crypto-dark-purple/40 border-crypto-purple/30 text-white placeholder-gray-500"
             />
+            {validationErrors.email && (
+              <p className="mt-1 text-sm text-red-300">
+                {validationErrors.email}
+              </p>
+            )}
           </div>
 
           <div>
@@ -172,8 +211,14 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Enter password (min 6 characters)"
               required
+              aria-invalid={Boolean(validationErrors.password)}
               className="bg-crypto-dark-purple/40 border-crypto-purple/30 text-white placeholder-gray-500"
             />
+            {validationErrors.password && (
+              <p className="mt-1 text-sm text-red-300">
+                {validationErrors.password}
+              </p>
+            )}
           </div>
 
           <div>
@@ -191,8 +236,14 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Confirm your password"
               required
+              aria-invalid={Boolean(validationErrors.confirmPassword)}
               className="bg-crypto-dark-purple/40 border-crypto-purple/30 text-white placeholder-gray-500"
             />
+            {validationErrors.confirmPassword && (
+              <p className="mt-1 text-sm text-red-300">
+                {validationErrors.confirmPassword}
+              </p>
+            )}
           </div>
 
           <Button

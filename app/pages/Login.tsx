@@ -7,6 +7,11 @@ import type { LoginRequestPayload } from "../type/Auth";
 import { apiClient } from "../api/client";
 import { toast } from "sonner";
 
+type LoginValidationErrors = {
+  email?: string;
+  password?: string;
+};
+
 const Login = () => {
   const navigate = useNavigate();
   const { login, isLoading, error, clearError, user, isAuthInitialized } =
@@ -16,6 +21,8 @@ const Login = () => {
     password: "",
     rememberMe: false,
   });
+  const [validationErrors, setValidationErrors] =
+    useState<LoginValidationErrors>({});
 
   useEffect(() => {
     if (isAuthInitialized && user) {
@@ -29,11 +36,42 @@ const Login = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+
+    if (name === "email" || name === "password") {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
+  };
+
+  const validateForm = (): LoginValidationErrors => {
+    const errors: LoginValidationErrors = {};
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formData.email.trim()) {
+      errors.email = "Please enter your email address.";
+    } else if (!emailPattern.test(formData.email.trim())) {
+      errors.email =
+        "Please enter a valid email address, for example name@company.com.";
+    }
+
+    if (!formData.password) {
+      errors.password = "Please enter your password.";
+    }
+
+    return errors;
   };
 
   const handleForgotPassword = async () => {
     if (!formData.email) {
       toast.error("Enter your email first");
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(formData.email.trim())) {
+      toast.error("Please enter a valid email address first.");
       return;
     }
 
@@ -48,6 +86,14 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
+    const errors = validateForm();
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors({});
 
     console.log("Login attempt with:", formData);
 
@@ -95,8 +141,14 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your email"
               required
+              aria-invalid={Boolean(validationErrors.email)}
               className="bg-crypto-dark-purple/40 border-crypto-purple/30 text-white placeholder-gray-500"
             />
+            {validationErrors.email && (
+              <p className="mt-1 text-sm text-red-300">
+                {validationErrors.email}
+              </p>
+            )}
           </div>
 
           <div>
@@ -114,8 +166,14 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your password"
               required
+              aria-invalid={Boolean(validationErrors.password)}
               className="bg-crypto-dark-purple/40 border-crypto-purple/30 text-white placeholder-gray-500"
             />
+            {validationErrors.password && (
+              <p className="mt-1 text-sm text-red-300">
+                {validationErrors.password}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center justify-between text-sm">

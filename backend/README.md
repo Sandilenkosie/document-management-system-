@@ -48,6 +48,9 @@ Update the following variables:
 - `DATABASE_URL`: Your PostgreSQL connection string
 - `JWT_SECRET`: A secure random string for JWT signing
 - `OCRSPACE_API_KEY`: Your OCRSpace API key
+- `GMAIL_USER`: Gmail address used to send emails
+- `GMAIL_APP_PASSWORD`: Google app password for that Gmail account
+- `MAIL_FROM` (optional): Friendly sender identity, e.g. `PCG MindRift <your@gmail.com>`
 
 ### 3. Database Setup
 

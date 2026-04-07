@@ -11,6 +11,27 @@ const resolveApiBaseUrl = (): string => {
 
 const API_BASE_URL = resolveApiBaseUrl();
 
+const FRIENDLY_NETWORK_ERROR_MESSAGE =
+  "Unable to connect to the server right now. Please check your internet connection and try again.";
+
+const normalizeClientErrorMessage = (error: unknown): string => {
+  if (!(error instanceof Error)) {
+    return FRIENDLY_NETWORK_ERROR_MESSAGE;
+  }
+
+  const message = error.message?.trim();
+  if (!message) {
+    return FRIENDLY_NETWORK_ERROR_MESSAGE;
+  }
+
+  // Browser/network failures often surface as "Failed to fetch".
+  if (message.toLowerCase().includes("failed to fetch")) {
+    return FRIENDLY_NETWORK_ERROR_MESSAGE;
+  }
+
+  return message;
+};
+
 class ApiClient {
   private token: string | null = null;
 
@@ -33,7 +54,12 @@ class ApiClient {
       ...options,
     };
 
-    const response = await fetch(url, config);
+    let response: Response;
+    try {
+      response = await fetch(url, config);
+    } catch (error) {
+      throw new Error(normalizeClientErrorMessage(error));
+    }
 
     if (!response.ok) {
       const errorPayload = await response
@@ -98,13 +124,18 @@ class ApiClient {
     formData.append("file", file);
     formData.append("documentType", documentType);
 
-    const response = await fetch(`${API_BASE_URL}/api/documents/upload`, {
-      method: "POST",
-      headers: {
-        ...(this.token && { Authorization: `Bearer ${this.token}` }),
-      },
-      body: formData,
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/documents/upload`, {
+        method: "POST",
+        headers: {
+          ...(this.token && { Authorization: `Bearer ${this.token}` }),
+        },
+        body: formData,
+      });
+    } catch (error) {
+      throw new Error(normalizeClientErrorMessage(error));
+    }
 
     if (!response.ok) {
       const error = await response

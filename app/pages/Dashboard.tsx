@@ -184,6 +184,17 @@ const Dashboard = () => {
     return value.toLocaleString();
   };
 
+  const userInitials = (() => {
+    const localPart = user?.email?.split("@")[0] ?? "";
+    const parts = localPart.split(/[._\-\s]+/).filter(Boolean);
+
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+
+    return (localPart.slice(0, 2) || "U").toUpperCase();
+  })();
+
   if (!isAuthInitialized || !user) {
     return null;
   }
@@ -213,8 +224,10 @@ const Dashboard = () => {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <p className="text-sm font-medium text-white">{user.email}</p>
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-full bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-sm font-semibold text-blue-200">
+                    {userInitials}
+                  </div>
                   <p className="text-xs text-gray-400">{userRole}</p>
                 </div>
                 <Button
@@ -334,7 +347,6 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-
         </div>
 
         {/* Main Content Grid */}
@@ -554,56 +566,6 @@ const Dashboard = () => {
                 </div>
                 <ArrowRight className="w-5 h-5" />
               </Button>
-            </div>
-
-            {/* AI Status */}
-            <div className="mt-8 pt-6 border-t border-slate-700/50">
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 shadow-2xl">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-blue-600 rounded-xl">
-                    <Brain className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-blue-300">
-                    AI Processing Status
-                  </h3>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-600/30">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-                      <span className="text-gray-300 font-medium">
-                        Document Analysis
-                      </span>
-                    </div>
-                    <span className="text-blue-300 font-semibold">Active</span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-600/30">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-                      <span className="text-gray-300 font-medium">
-                        Duplicate Detection
-                      </span>
-                    </div>
-                    <span className="text-blue-300 font-semibold">
-                      Processing
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-600/30">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-                      <span className="text-gray-300 font-medium">
-                        Approval Workflow
-                      </span>
-                    </div>
-                    <span className="text-blue-300 font-semibold">
-                      Queued
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
