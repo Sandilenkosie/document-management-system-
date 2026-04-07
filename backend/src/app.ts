@@ -57,8 +57,20 @@ app.use("/api/documents", documentRoutes);
 app.use("/api/approvals", approvalRoutes);
 app.use("/api/reports", reportRoutes);
 
+app.get("/", (_req, res) => {
+  res.json({
+    status: "OK",
+    service: "pcg-mindrift-backend",
+    health: "/api/health",
+  });
+});
+
 app.get("/api/health", (_req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
+});
+
+app.get("/favicon.ico", (_req, res) => {
+  res.status(204).end();
 });
 
 app.use(errorHandler);
